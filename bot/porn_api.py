@@ -11,18 +11,31 @@ api = PornhubApi()
 
 #временная функция, надо заменить на нормальную
 def getporn_from_request(s: str) -> str:
-    
     return('суперпорно с конями и ' + s)
 
 def getporn_from_category(s: str) -> str:
-   # category = dict ([('gay_sex', 1), ('orgy', 2), ('ebony', 3), ('asia', 4)])
-    
-    
-    
-    #category = urllib.request.urlopen("https://www.pornhub.com/video?c=76")    <------- (stackoverflow) будет, вроде как, сёрчить в данной категории на одной странице 
-   # soup = BeautifulSoup(html_page, "html.parser")
-    #for link in soup.findAll('a'):
-      #  print(link.get('href'))
-    pass
+   # словарь, в котором категория является ключом, а циферка категории - значением
+   # в функцию можно закидывать только строку - одну из этих категорий
+  category: dict = {
+                  'asia': 1,
+                  'ebony': 17,
+                  'gay_sex': 76,
+                  'orgy': 80
+                  }
 
+  #формирование адреса для нашей категории
+  url: str = 'https://www.pornhub.com/video?c=' + str(category[s])
+    
+  page = requests.get(url)   
+  #print(page.status_code) оно работает
+
+  soup = BS(page.text, "html.parser")
+
+  ans = []
+  for link in soup.findAll('a'):
+    ans.append(link.get('href'))
+  return ans
 #че блять?       бл я тупой          мой мозк поплыл при попытке присвоить ссылки значениям 1,2,3,4  мне нужна твоя помощьб мома (つ﹏⊂)
+
+if __name__ == '__main__':
+  print(getporn_from_category('orgy'))

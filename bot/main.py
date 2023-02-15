@@ -23,7 +23,8 @@ async def process_start_command(message: Message):
     if message.from_user.id not in users:
         #по умолчанию ставит хочет_порно в фолс для всех
         users[message.from_user.id] = {
-                                        'wanna_porn': False
+                                        'wanna_porn': False,
+                                        'wanna_categoried_porn' : False
                                         }
 
 #хэнд на  "/help"
@@ -32,20 +33,31 @@ async def process_start_command(message: Message):
     await message.answer('текст который выводится при хелп')
 
 
-#на "/sendnudes", ставит хочет_порно в тру
-@dp.message(Command(commands=["sendnudes"]))
+#на "/request", ставит хочет_порно в тру
+@dp.message(Command(commands=["request"]))
 async def process_sendnudes_command(message: Message):
     users[message.from_user.id]['wanna_porn'] = True
-    await message.answer('напишите интересующий вас жанр')
+    await message.answer('напишите ваш запрос')
 
+#на "/categories", ставит хочет_порно в тру
+@dp.message(Command(commands=["categories"]))
+async def process_sendnudes_command(message: Message):
+    users[message.from_user.id]['wanna_categoried_porn'] = True
+    await message.answer('напишите интересующий вас жанр, один из:\n asia, ebony, gay_sex, orgy\n пожалуйста, не пишите другие жанры, я пока не умею их обрабатывать :с')
 
 #если чел хочет порно, кидает порно + ставит статус хочет_порно в фолс, если не хочет, кидает ему его же сообщ
 @dp.message()
 async def send_echo(message: Message):
-    if users[message.from_user.id]['wanna_nudes']:
+    if users[message.from_user.id]['wanna_porn']:
         porn = getporn_from_request(message.text)
-        await message.answer('вот ваше порно: ' + porn)
+        await message.answer('вот ваше порно:\n' + str(porn))
         users[message.from_user.id]['wanna_porn'] = False
+
+    elif users[message.from_user.id]['wanna_categoried_porn']:
+        porn = getporn_from_category(message.text)
+        await message.answer('вот ваше порно:\n' + porn)
+        users[message.from_user.id]['wanna_categoried_porn'] = False
+
     else:
         await message.send_copy(chat_id=message.chat.id)
 
