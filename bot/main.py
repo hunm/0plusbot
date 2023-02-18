@@ -1,6 +1,6 @@
 #пук пук
-from aiogram import Bot, Dispatcher, F
-from aiogram.filters import Command
+from aiogram import Bot, Dispatcher
+from aiogram.dispatcher.filters import Command
 from aiogram.types import Message, ContentType
 
 from porn_api import getporn_from_request, getbestporn, getporn_from_category
